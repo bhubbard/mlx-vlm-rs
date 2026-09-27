@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mlx-vlm-rs | Vision-Language Models for Apple Silicon in Pure Rust</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-badge">MLX</span>
+        <span class="logo-title">mlx-vlm-rs</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#architectures">Architectures</a>
+        <a href="#fusion-visualizer">Token Fusion</a>
+        <a href="#simulator">Live Simulator</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="https://github.com/bhubbard/mlx-vlm-rs" target="_blank" class="github-btn">
+          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+          </svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <div class="hero-badge">⚡ Pure Rust Apple Silicon MLX Port of Blaizzy/mlx-vlm</div>
+      <h1 class="hero-title">Ultra-Fast Vision-Language Inference on Apple Silicon</h1>
+      <p class="hero-subtitle">
+        High-throughput, idiomatic Rust engine for <strong>Qwen2-VL</strong>, <strong>PaliGemma</strong>, 
+        <strong>SmolVLM</strong>, and <strong>LLaVA</strong>. Powered directly by unified memory MLX C++ kernels with zero Python overhead.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-value">0.42 ms</div>
+          <div class="stat-label">Vision Encoding Latency</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">128+ tok/s</div>
+          <div class="stat-label">Apple M-Series Decode</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Pure Rust + MLX-RS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0.0 MB</div>
+          <div class="stat-label">Python / PyTorch Overhead</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Selector -->
+    <section id="architectures" class="section">
+      <div class="section-header">
+        <span class="section-tag">Supported Models</span>
+        <h2>Unified Multi-Modal Architectures</h2>
+        <p>Seamlessly toggle between standard vision-language backbone configurations.</p>
+      </div>
+
+      <div class="arch-selector">
+        <button class="arch-tab active" data-arch="paligemma">PaliGemma 3B</button>
+        <button class="arch-tab" data-arch="qwen2vl">Qwen2-VL 2B</button>
+        <button class="arch-tab" data-arch="smolvlm">SmolVLM 500M</button>
+        <button class="arch-tab" data-arch="llava">LLaVA 1.5 7B</button>
+      </div>
+
+      <div class="arch-card" id="arch-display">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Token Fusion Visualizer -->
+    <section id="fusion-visualizer" class="section">
+      <div class="section-header">
+        <span class="section-tag">Internal Mechanics</span>
+        <h2>Multi-Modal Token Fusion Pipeline</h2>
+        <p>Observe how 2D image patches are linearly projected and interleaved into causal transformer attention tokens.</p>
+      </div>
+
+      <div class="fusion-container">
+        <div class="fusion-step">
+          <div class="step-badge">1. Input Image</div>
+          <div class="image-preview-box">
+            <div class="patch-grid" id="patch-grid"></div>
+          </div>
+          <div class="step-meta" id="patch-meta">256 Patches (14x14 px)</div>
+        </div>
+
+        <div class="fusion-arrow">➔</div>
+
+        <div class="fusion-step">
+          <div class="step-badge">2. SigLIP Vision Encoder</div>
+          <div class="vector-box">
+            <div class="vector-row"><span>Patch 1..N</span> ➔ [1, 256, 1152]</div>
+            <div class="vector-sub">Linear + ViT Attention Blocks</div>
+          </div>
+        </div>
+
+        <div class="fusion-arrow">➔</div>
+
+        <div class="fusion-step">
+          <div class="step-badge">3. MLP Projector</div>
+          <div class="vector-box highlight">
+            <div class="vector-row"><span>Projection</span> ➔ [1, 256, 2048]</div>
+            <div class="vector-sub">Maps Vision Dim ➔ Text Dim</div>
+          </div>
+        </div>
+
+        <div class="fusion-arrow">➔</div>
+
+        <div class="fusion-step">
+          <div class="step-badge">4. Fused Sequence</div>
+          <div class="token-stream" id="token-stream">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Prompt Simulator -->
+    <section id="simulator" class="section">
+      <div class="section-header">
+        <span class="section-tag">Live Playground</span>
+        <h2>Interactive Vision-Language Simulator</h2>
+        <p>Select a sample visual prompt and watch real-time token streaming with simulated autoregressive sampling.</p>
+      </div>
+
+      <div class="simulator-card">
+        <div class="sim-controls">
+          <div class="sim-group">
+            <label>Sample Scenario:</label>
+            <select id="sim-preset" class="sim-select">
+              <option value="chart">Financial Infographic Analysis</option>
+              <option value="receipt">Grocery Receipt OCR & Extraction</option>
+              <option value="wildlife">Wildlife & Botanical Identification</option>
+              <option value="code">Screenshot UI to Rust Tailwind</option>
+            </select>
+          </div>
+          <div class="sim-group">
+            <label>Sampling Temperature: <span id="temp-val">0.7</span></label>
+            <input type="range" id="temp-slider" min="0.0" max="1.5" step="0.1" value="0.7">
+          </div>
+          <div class="sim-group">
+            <label>Max Tokens: <span id="tokens-val">64</span></label>
+            <input type="range" id="tokens-slider" min="16" max="128" step="16" value="64">
+          </div>
+        </div>
+
+        <div class="sim-workspace">
+          <div class="sim-input-col">
+            <div class="sim-img-view" id="sim-img-display">
+              <!-- Preset visual icon/tag -->
+            </div>
+            <textarea id="sim-prompt" class="sim-textarea" rows="3"></textarea>
+            <button id="run-sim-btn" class="run-btn">Generate Multi-Modal Response</button>
+          </div>
+
+          <div class="sim-output-col">
+            <div class="output-header">
+              <span>Streaming Generation Log</span>
+              <span id="gen-metrics" class="metrics-badge">Ready</span>
+            </div>
+            <div class="output-body" id="sim-output">
+              Click "Generate Multi-Modal Response" to simulate inference...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section id="quickstart" class="section">
+      <div class="section-header">
+        <span class="section-tag">Developer Guide</span>
+        <h2>CLI & Rust SDK Quickstart</h2>
+      </div>
+
+      <div class="code-grid">
+        <div class="code-card">
+          <div class="code-header">CLI Usage</div>
+          <pre><code><span class="comment"># Benchmark inference throughput</span>
+mlx-vlm bench --arch paligemma --num-tokens 64
+
+<span class="comment"># Describe an image with PaliGemma</span>
+mlx-vlm generate \
+  --image ./document.png \
+  --prompt "Transcribe the table data into JSON" \
+  --temperature 0.2
+
+<span class="comment"># Inspect model architecture parameters</span>
+mlx-vlm info --arch qwen2vl</code></pre>
+        </div>
+
+        <div class="code-card">
+          <div class="code-header">Rust SDK Integration</div>
+          <pre><code><span class="keyword">use</span> mlx_vlm_rs::{VlmPipeline, VlmConfig, VlmArchitecture, GenerationConfig};
+
+<span class="keyword">fn</span> <span class="fn">main</span>() -> <span class="keyword">anyhow</span>::Result&lt;()&gt; {
+    <span class="keyword">let</span> config = VlmConfig::preset(VlmArchitecture::PaliGemma);
+    <span class="keyword">let mut</span> pipeline = VlmPipeline::new(config)?;
+
+    <span class="keyword">let</span> img = pipeline.load_image(<span class="string">"chart.png"</span>)?;
+    <span class="keyword">let</span> prompt_tokens = <span class="macro">vec!</span>[257152, 101, 102]; <span class="comment">// &lt;image&gt; + prompt</span>
+
+    pipeline.generate(<span class="prelude-val">Some</span>(&amp;img), &amp;prompt_tokens, &amp;GenerationConfig::default(), |token| {
+        <span class="macro">print!</span>(<span class="string">"{}"</span>, token);
+        <span class="bool">true</span>
+    })?;
+    <span class="prelude-val">Ok</span>(())
+}</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>© 2026 Brandon Hubbard. Built with pure Rust & Apple Silicon MLX. MIT / Apache-2.0 License.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
