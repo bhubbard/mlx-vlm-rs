@@ -7,6 +7,7 @@ use crate::config::VlmConfig;
 use crate::error::Result;
 use crate::language::cache::KVCache;
 
+#[derive(Debug)]
 pub struct CausalSelfAttention {
     pub num_heads: usize,
     pub head_dim: usize,
@@ -89,6 +90,7 @@ impl CausalSelfAttention {
     }
 }
 
+#[derive(Debug)]
 pub struct CausalDecoderLayer {
     pub attention: CausalSelfAttention,
     pub mlp1: Linear,
@@ -123,6 +125,7 @@ impl CausalDecoderLayer {
     }
 }
 
+#[derive(Debug)]
 pub struct CausalLanguageModel {
     pub config: VlmConfig,
     pub layers: Vec<CausalDecoderLayer>,

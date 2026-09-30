@@ -6,6 +6,7 @@ use image::GenericImageView;
 use crate::config::VlmConfig;
 use crate::error::Result;
 
+#[derive(Debug)]
 pub struct VisionAttention {
     pub num_heads: usize,
     pub head_dim: usize,
@@ -61,6 +62,7 @@ impl VisionAttention {
     }
 }
 
+#[derive(Debug)]
 pub struct VisionBlock {
     pub attention: VisionAttention,
     pub mlp1: Linear,
@@ -89,6 +91,7 @@ impl VisionBlock {
     }
 }
 
+#[derive(Debug)]
 pub struct SigLipVisionEncoder {
     pub config: VlmConfig,
     pub patch_proj: Linear,

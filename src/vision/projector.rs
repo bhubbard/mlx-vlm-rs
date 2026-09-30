@@ -3,6 +3,7 @@ use mlx_rs::nn::Linear;
 use mlx_rs::Array;
 use crate::error::Result;
 
+#[derive(Debug)]
 pub struct MultiModalProjector {
     pub linear1: Linear,
     pub linear2: Linear,

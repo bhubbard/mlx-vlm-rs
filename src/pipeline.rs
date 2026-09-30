@@ -8,6 +8,7 @@ use crate::language::llama::CausalLanguageModel;
 use crate::sampler::Sampler;
 use crate::vision::{MultiModalProjector, SigLipVisionEncoder};
 
+#[derive(Debug)]
 pub struct VlmPipeline {
     pub config: VlmConfig,
     pub vision_encoder: SigLipVisionEncoder,

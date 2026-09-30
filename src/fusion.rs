@@ -5,6 +5,7 @@ use mlx_rs::ops::indexing::IndexOp;
 use mlx_rs::Array;
 use crate::error::Result;
 
+#[derive(Debug)]
 pub struct MultiModalFusion {
     pub image_token_id: i32,
     pub text_embedding: Embedding,

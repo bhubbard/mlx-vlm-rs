@@ -1,6 +1,6 @@
 [package]
 name = "mlx-vlm-rs"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["Brandon Hubbard <brandon@brandonhubbard.com>"]
 description = "Native Apple Silicon Rust engine for Vision-Language Models (Qwen2-VL, PaliGemma, SmolVLM, LLaVA) using MLX"

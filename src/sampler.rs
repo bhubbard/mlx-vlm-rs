@@ -3,6 +3,7 @@ use mlx_rs::Array;
 use crate::config::GenerationConfig;
 use crate::error::Result;
 
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Sampler;
 
 impl Sampler {

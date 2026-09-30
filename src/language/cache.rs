@@ -2,7 +2,7 @@ use mlx_rs::ops::concatenate;
 use mlx_rs::Array;
 use crate::error::Result;
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct KVCache {
     pub key_cache: Vec<Option<Array>>,
     pub value_cache: Vec<Option<Array>>,
